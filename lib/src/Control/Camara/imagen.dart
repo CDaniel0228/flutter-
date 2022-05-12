@@ -1,62 +1,36 @@
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class imagen {
-  var imageFile;
-  final ImagePicker _picker = ImagePicker();
+  final FirebaseStorage storage = FirebaseStorage.instance;
 
-  openCamera(BuildContext context) async {
-    var picture = await ImagePicker().pickImage(source: ImageSource.camera);
-    imageFile = picture.toString();
-    /*setState(() {
-      imageFile = picture.toString();
-    });*/
-
-    Navigator.of(context).pop();
-  }
-
-  openGallery(BuildContext context) async {
-    imageFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    /*setState(() {
-      imageFile = picture.toString();
-    });*/
-    Navigator.of(context).pop();
-  }
-
-  Widget setImageView() {
-    if (imageFile != null) {
-      return Image.file(imageFile, width: 100, height: 100);
-    } else {
-      return Text("Please select an image");
+//guarda las imagenes
+  Future<String> uploadFile(filePath, fileName) async {
+    File archivo = File(filePath);
+    try {
+      var linking = await storage.ref('test/$fileName').putFile(archivo);
+      String link = await linking.ref.getDownloadURL();
+      print(link);
+      return link;
+    } on FirebaseException catch (e) {
+      print(e);
+      return 'null';
     }
   }
 
-  Future<void> showSelectionDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              title: Text("From where do you want to take the photo?"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    GestureDetector(
-                      child: Text("Gallery"),
-                      onTap: () {
-                        openGallery(context);
-                      },
-                    ),
-                    Padding(padding: EdgeInsets.all(8.0)),
-                    GestureDetector(
-                      child: Text("Camera"),
-                      onTap: () {
-                        openCamera(context);
-                      },
-                    )
-                  ],
-                ),
-              ));
-        });
+//devuelve todas la imagenes
+  Future<ListResult> listaImagenes() async {
+    ListResult result = await storage.ref('test').listAll();
+    result.items.forEach((Reference ref) {
+      print(ref);
+    });
+    print(result);
+    return result;
+  }
+
+//devuelve url de las imagenes
+  Future<String> url(fileName) async {
+    String url = await storage.ref('test/$fileName').getDownloadURL();
+    return url;
   }
 }

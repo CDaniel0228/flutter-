@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Control/Cuentas/Autentificacion.dart';
 import 'package:flutter_application_1/src/Vista/Productos/articulos.dart';
+import 'package:flutter_application_1/src/Vista/Productos/estructura.dart';
 import 'package:flutter_application_1/src/Vista/inicioSesion/estructura.dart';
 import 'Catalogo/catalogo.dart';
 import 'Compras/compras.dart';
@@ -69,7 +70,8 @@ class MenuLateral extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => articulos()),
+                    MaterialPageRoute(
+                        builder: (context) => EstructuraProducto()),
                   );
                 },
                 child: Row(
@@ -89,12 +91,12 @@ class MenuLateral extends StatelessWidget {
             padding: EdgeInsets.only(top: 50),
             child: TextButton(
                 onPressed: () async {
-                  if (await Autentificacion().signedOut()) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => estructura()),
-                    );
-                  }
+                  //if (await Autentificacion().signedOut()) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => estructura()),
+                  );
+                  // }
                 },
                 child: Row(
                   children: [

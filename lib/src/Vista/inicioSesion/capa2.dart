@@ -31,16 +31,17 @@ class capa2 {
   }
 
   Widget botonInicio(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 80, right: 50, left: 50),
+    return Container(
+        width: 150,
+        padding: const EdgeInsets.only(top: 80),
         child: RaisedButton(
           color: Color(0xFF11253c),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           onPressed: () async {
             authService = Provider.of<Autentificacion>(context, listen: false);
-            print(boxUsuario.text);
-            if (await authService.signIn(boxUsuario.text, boxContrasena.text)) {
+            if (await authService.signIn(boxUsuario.text, boxContrasena.text) ==
+                true) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SecondRoute()),
@@ -49,7 +50,7 @@ class capa2 {
           },
           child: const Text(
             'Iniciar Sesion',
-            style: TextStyle(fontSize: 10, color: Colors.white),
+            style: TextStyle(fontSize: 15, color: Colors.white),
           ),
         ));
   }

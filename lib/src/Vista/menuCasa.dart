@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Vista/Catalogo/catalogo.dart';
 import 'package:flutter_application_1/src/Vista/Compras/compras.dart';
-import 'package:flutter_application_1/src/Vista/Usuario/estructura.dart';
+import 'package:flutter_application_1/src/Vista/Usuario/estructuraUsuario.dart';
 
 class menuCasa {
   Widget campoCasa(BuildContext context) {

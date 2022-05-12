@@ -1,7 +1,11 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Control/Cuentas/Autentificacion.dart';
+import 'package:flutter_application_1/src/Modelo/usuarioM.dart';
 import 'package:flutter_application_1/src/Vista/menuCasa.dart';
 import 'package:provider/provider.dart';
+
+import '../../Control/Cuentas/usuario_service.dart';
 
 class estructura extends StatefulWidget {
   @override
@@ -11,10 +15,10 @@ class estructura extends StatefulWidget {
 class _estructuraState extends State<estructura> {
   final boxNombre = TextEditingController();
   final boxContrasena = TextEditingController();
+  final boxDireccion = TextEditingController();
+  final boxCorreo = TextEditingController();
+  final boxTelefono = TextEditingController();
 
-  String nombre = "c2";
-  int indice = 0;
-  var send = [];
   var imagenUsuario;
   var nombreUsuario;
   var correoUsuario;
@@ -48,6 +52,7 @@ class _estructuraState extends State<estructura> {
             campoDireccion(),
             campoContrasena(),
             botonGuardar(context),
+            botonMostrar(context),
             menuCasa().campoCasa(context)
           ],
         ));
@@ -72,7 +77,7 @@ class _estructuraState extends State<estructura> {
         //flatbutton
         padding: EdgeInsets.only(left: 30, right: 30, top: 30),
         child: TextField(
-            controller: boxContrasena, decoration: decoracion(nombreUsuario)));
+            controller: boxNombre, decoration: decoracion(nombreUsuario)));
   }
 
   Widget campoEmail() {
@@ -80,7 +85,10 @@ class _estructuraState extends State<estructura> {
         //flatbutton
         padding: EdgeInsets.only(left: 30, right: 30, top: 30),
         child: TextField(
-            controller: boxContrasena, decoration: decoracion(correoUsuario)));
+          controller: boxCorreo,
+          decoration: decoracion(correoUsuario),
+          enabled: false,
+        ));
   }
 
   Widget campoTelefono() {
@@ -88,7 +96,7 @@ class _estructuraState extends State<estructura> {
         //flatbutton
         padding: EdgeInsets.only(left: 30, right: 30, top: 30),
         child: TextField(
-            controller: boxContrasena, decoration: decoracion("Telefono")));
+            controller: boxTelefono, decoration: decoracion("Telefono")));
   }
 
   Widget campoDireccion() {
@@ -96,7 +104,7 @@ class _estructuraState extends State<estructura> {
         //flatbutton
         padding: EdgeInsets.only(left: 30, right: 30, top: 30),
         child: TextField(
-            controller: boxContrasena, decoration: decoracion("Dirreccion")));
+            controller: boxDireccion, decoration: decoracion("Dirreccion")));
   }
 
   Widget campoContrasena() {
@@ -116,12 +124,52 @@ class _estructuraState extends State<estructura> {
           shape: const Border(
             bottom: BorderSide(width: 5, color: Color(0xFFffc797)),
           ),
-          onPressed: () async {},
+          onPressed: () async {
+            ProfileService().usuarioAdd(usuarioM('nombre2', 'apellido',
+                'telefono', 'direccion', 'correo2', 'contrasena'));
+          },
           child: const Text(
             "Guardar",
             style: TextStyle(fontSize: 10, color: Colors.white),
           ),
         )));
+  }
+
+  Widget botonMostrar(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(top: 50, right: 50, left: 50),
+        child: Align(
+            child: FlatButton(
+          color: Colors.transparent,
+          shape: const Border(
+            bottom: BorderSide(width: 5, color: Color(0xFFffc797)),
+          ),
+          onPressed: () async {
+            print('object');
+            usuarioM usi = await ProfileService().usuarioGet(email: 'correo2');
+            if (usi != null) {
+              print(usi.nombre);
+            }
+          },
+          child: const Text(
+            "Ver",
+            style: TextStyle(fontSize: 10, color: Colors.white),
+          ),
+        )));
+  }
+
+  Widget getUsu() {
+    return FutureBuilder(
+        future: ProfileService().usuarioGet(email: 'correo2'),
+        builder: (context, snapshot) {
+          if (snapshot.data != null) {
+            usuarioM usi = snapshot.data as usuarioM;
+            print(usi.nombre);
+          } else {
+            print('222');
+          }
+          return CircularProgressIndicator();
+        });
   }
 
   decoracion(nombre) {

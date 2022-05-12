@@ -1,8 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/src/Control/Camara/imagen.dart';
+import 'package:flutter_application_1/src/Control/Cuentas/producto_service.dart';
+import 'package:flutter_application_1/src/Mensajes/mensaje.dart';
+import 'package:flutter_application_1/src/Modelo/productosM.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
+import '../../Control/Cuentas/Autentificacion.dart';
 import '../menuLateral.dart';
 
 class articulos extends StatefulWidget {
@@ -11,16 +17,19 @@ class articulos extends StatefulWidget {
 }
 
 class _articulosState extends State<articulos> {
-  var imageFile;
-  final ImagePicker _picker = ImagePicker();
+  String dropdownvalue = ' Celulares';
 
+  var imageFile, nombrePath, correoUsuario;
+  final ImagePicker _picker = ImagePicker();
+  final boxCategoria = TextEditingController();
   final boxNombre = TextEditingController();
-  //Filtrar
   final boxPrecio = TextEditingController();
-  final boxMarca = TextEditingController();
-  final boxEGratis = TextEditingController();
+  final boxCaracteristicas = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    var authService = Provider.of<Autentificacion>(context);
+    correoUsuario = authService.user?.email;
     return Scaffold(
         appBar: AppBar(
             title: Text('Productos'),
@@ -37,7 +46,14 @@ class _articulosState extends State<articulos> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           // crossAxisAlignment: CrossAxisAlignment.start,
-          children: [imagenProducto(context), nombreProducto()],
+          children: [
+            imagenProducto(context),
+            nombreProducto(),
+            precioProducto(),
+            caracteristicasProducto(),
+            categoriaProducto(),
+            botonGuardar(),
+          ],
         )));
   }
 
@@ -57,8 +73,75 @@ class _articulosState extends State<articulos> {
         padding: const EdgeInsets.only(left: 50, right: 50, top: 30),
         child: TextField(
             controller: boxNombre,
-            obscureText: true,
             decoration: decoracion("Nombre del producto")));
+  }
+
+  Widget precioProducto() {
+    return Padding(
+        //flatbutton
+        padding: const EdgeInsets.only(left: 50, right: 50, top: 30),
+        child: TextField(
+            controller: boxPrecio,
+            decoration: decoracion("precio del producto")));
+  }
+
+  Widget caracteristicasProducto() {
+    return Padding(
+        //flatbutton
+        padding: const EdgeInsets.only(left: 50, right: 50, top: 30),
+        child: TextField(
+            controller: boxCaracteristicas,
+            decoration: decoracion("caracteristicas del producto")));
+  }
+
+  Widget categoriaProducto2() {
+    return Padding(
+        //flatbutton
+        padding: const EdgeInsets.only(left: 50, right: 50, top: 30),
+        child: TextField(
+            controller: boxCategoria,
+            decoration: decoracion("categoria del producto")));
+  }
+
+  Widget categoriaProducto() {
+    var items = [" Celulares", "Televisores", "Neveras", "Accesorios"];
+    return DropdownButton(
+      value: dropdownvalue,
+      icon: const Icon(Icons.keyboard_arrow_down),
+      items: items.map((String items) {
+        return DropdownMenuItem(
+          value: items,
+          child: Text(items),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() {
+          dropdownvalue = newValue!;
+        });
+      },
+      style: TextStyle(color: Colors.white),
+    );
+  }
+
+  Widget botonGuardar() {
+    return Container(
+        width: 200,
+        padding: EdgeInsets.only(top: 30),
+        child: RaisedButton(
+          color: Color(0xFF11253c),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: const Text(
+            'Guardar',
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () async {
+            String link = await imagen().uploadFile(imageFile, nombrePath);
+            ProductosService().productoAdd(productosM(link, boxNombre.text,
+                boxPrecio.text, boxCaracteristicas.text, correoUsuario));
+            mensaje().info('Producto guardado');
+          },
+        ));
   }
 
   openCamera(BuildContext context) async {
@@ -66,6 +149,7 @@ class _articulosState extends State<articulos> {
 
     setState(() {
       imageFile = foto?.path;
+      nombrePath = foto?.name;
     });
 
     Navigator.of(context).pop();
@@ -76,6 +160,7 @@ class _articulosState extends State<articulos> {
 
     setState(() {
       imageFile = foto?.path;
+      nombrePath = foto?.name;
     });
     Navigator.of(context).pop();
   }

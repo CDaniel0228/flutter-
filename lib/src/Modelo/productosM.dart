@@ -1,42 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class productosM {
-  String nombre = "";
-  String precio = "";
-  String caracteristicas = "";
-  String imagen = "";
+  final String imagen;
+  final String nombre;
+  final String precio;
+  final String caracteristicas;
+  final String email;
+  DocumentReference? reference;
 
-  //Constructor
+//constructor
+  productosM(
+      this.imagen, this.nombre, this.precio, this.caracteristicas, this.email);
 
-  productosM(this.nombre, this.precio, this.caracteristicas, this.imagen);
+//get
+  productosM.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data.call() as Map<String, dynamic>,
+            reference: snapshot.reference);
 
-  setNombre(nombre) {
-    this.nombre = nombre;
-  }
+  productosM.fromMap(Map<String, dynamic> map, {this.reference})
+      : imagen = map['imagen'],
+        nombre = map['nombre'],
+        precio = map['precio'],
+        caracteristicas = map['caracteristicas'],
+        email = map['email'];
 
-  getNombre() {
-    return nombre;
-  }
-
-  setPrecio(precio) {
-    this.precio = precio;
-  }
-
-  getPrecio() {
-    return precio;
-  }
-
-  setcaracteristicas(caracteristicas) {
-    this.caracteristicas = caracteristicas;
-  }
-
-  getcaracteristicas() {
-    return caracteristicas;
-  }
-
-  setImagen(imagen) {
-    this.imagen = imagen;
-  }
-
-  getImagen() {
-    return imagen;
+//set
+  Map<String, dynamic> toJson() {
+    return {
+      'imagen': imagen,
+      'nombre': nombre,
+      'precio': precio,
+      'caracteristicas': caracteristicas,
+      'email': email
+    };
   }
 }

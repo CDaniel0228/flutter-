@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Control/Cuentas/Autentificacion.dart';
 import 'package:flutter_application_1/src/Mensajes/mensaje.dart';
 
-class capa3 extends StatefulWidget {
+class capa3 {
   var boxCorreo;
   var boxContrasena;
   var boxConfirmar;
@@ -12,8 +12,10 @@ class capa3 extends StatefulWidget {
     return Padding(
         //flatbutton
         padding: const EdgeInsets.only(left: 30, right: 30, top: 50),
-        child:
-            TextField(controller: boxCorreo, decoration: decoracion("Email")));
+        child: TextField(
+            controller: boxCorreo,
+            keyboardType: TextInputType.emailAddress,
+            decoration: decoracion("Email")));
   }
 
   Widget campoContrasena() {
@@ -21,7 +23,9 @@ class capa3 extends StatefulWidget {
         //flatbutton
         padding: EdgeInsets.only(left: 30, right: 30, top: 30),
         child: TextField(
-            controller: boxContrasena, decoration: decoracion("Contraseña")));
+            controller: boxContrasena,
+            obscureText: true,
+            decoration: decoracion("Contraseña")));
   }
 
   Widget campoConfirmar() {
@@ -30,6 +34,7 @@ class capa3 extends StatefulWidget {
         padding: EdgeInsets.only(left: 30, right: 30, top: 30),
         child: TextField(
             controller: boxConfirmar,
+            obscureText: true,
             decoration: decoracion("Confirmar contraseña")));
   }
 
@@ -49,27 +54,38 @@ class capa3 extends StatefulWidget {
   }
 
   Widget botonRegistrar(BuildContext context) {
-    return Padding(
+    return Container(
+        width: 150,
         padding: EdgeInsets.only(top: 50),
         child: RaisedButton(
           color: Color(0xFF11253c),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           onPressed: () async {
-            if (boxContrasena.text == boxConfirmar.text) {
-              if (!await Autentificacion()
-                  .crearUsuario(boxCorreo.text, boxContrasena.text)) {
-                mensaje().info('No se creo');
+            if (boxCorreo.text != '' &&
+                boxContrasena.text != '' &&
+                boxConfirmar.text != '') {
+              if (validateEmail(boxCorreo.text)) {
+                if (boxContrasena.text == boxConfirmar.text) {
+                  if (!await Autentificacion()
+                      .crearUsuario(boxCorreo.text, boxContrasena.text)) {
+                    mensaje().info('Compruebe su conexion');
+                  } else {
+                    mensaje().info('Cuenta creada');
+                    limpiar();
+                  }
+                } else {
+                  mensaje().info('No coiciden las cotraseña');
+                }
               } else {
-                mensaje().info('Cuenta creada');
-                limpiar();
+                mensaje().info('Correo no valido');
               }
             } else {
-              mensaje().info("No coinciden las contraseñas");
+              mensaje().info("campos bacios");
             }
           },
           child: const Text('Registrarme',
-              style: TextStyle(fontSize: 10, color: Colors.white)),
+              style: TextStyle(fontSize: 15, color: Colors.white)),
         ));
   }
 
@@ -83,9 +99,16 @@ class capa3 extends StatefulWidget {
     boxConfirmar.text = '';
   }
 
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    throw UnimplementedError();
+  bool validateEmail(String value) {
+    String pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regExp = RegExp(pattern);
+    if (value.isEmpty) {
+      return false;
+    } else if (!regExp.hasMatch(value)) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
