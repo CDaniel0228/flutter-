@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Control/Cuentas/Autentificacion.dart';
 import 'package:flutter_application_1/src/Mensajes/mensaje.dart';
+import 'package:flutter_application_1/src/Modelo/usuarioM.dart';
+
+import '../../Control/Cuentas/usuario_service.dart';
 
 class capa3 {
   var boxCorreo;
@@ -69,8 +72,9 @@ class capa3 {
                 if (boxContrasena.text == boxConfirmar.text) {
                   if (!await Autentificacion()
                       .crearUsuario(boxCorreo.text, boxContrasena.text)) {
-                    mensaje().info('Compruebe su conexion');
                   } else {
+                    ProfileService().usuarioAdd(usuarioM(
+                        "nombre", "telefono", "direccion", boxCorreo.text));
                     mensaje().info('Cuenta creada');
                     limpiar();
                   }

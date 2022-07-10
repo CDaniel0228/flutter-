@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/src/Control/Cuentas/Autentificacion.dart';
-import 'package:flutter_application_1/src/Vista/Productos/articulos.dart';
 import 'package:flutter_application_1/src/Vista/Productos/estructura.dart';
 import 'package:flutter_application_1/src/Vista/inicioSesion/estructura.dart';
 import 'Catalogo/catalogo.dart';

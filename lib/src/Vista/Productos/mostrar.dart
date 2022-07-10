@@ -20,6 +20,7 @@ class MostrarProductos extends StatelessWidget {
 
   Widget panel(BuildContext context) {
     return Container(
+        height: MediaQuery.of(context).size.height,
         color: Color(0xFF333742),
         child: Center(
             child: Column(

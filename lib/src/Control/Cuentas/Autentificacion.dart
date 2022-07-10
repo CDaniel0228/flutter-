@@ -2,6 +2,9 @@ import "package:firebase_auth/firebase_auth.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Mensajes/mensaje.dart';
 import "package:google_sign_in/google_sign_in.dart";
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
+import '../../Modelo/usuarioM.dart';
 
 class Autentificacion with ChangeNotifier {
   final FirebaseAuth _auth;
@@ -42,37 +45,33 @@ class Autentificacion with ChangeNotifier {
 //Iniciar Sesion con Correo y contraseña
   Future<bool> signIn(email, password) async {
     try {
-      final usuario = _auth.currentUser;
-      final user = await _auth.signInWithEmailAndPassword(
+      final userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      print(usuario?.emailVerified);
-      print('kk');
-      if (user != null && usuario?.emailVerified != null) {
+
+      if (userCredential != null) {
+        user = userCredential.user;
         return true;
       } else {
-        mensaje().info('Confirmar correo');
         return false;
       }
     } on FirebaseAuthException catch (e) {
+      mensaje().info("$e");
       return false;
     }
   }
 
 //Crear nuevo usuario
-  Future<bool> crearUsuario(email, password) async {
+  Future<bool> crearUsuario(email, clave) async {
     try {
       final persona = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+          email: email, password: clave);
       if (persona.user != null) {
-        final usuario = _auth.currentUser;
-        usuario?.sendEmailVerification();
-        mensaje().info("Se envio un enlace de confirmacion al correo");
         return true;
       } else {
-        print(persona.toString() + "si esta");
         return false;
       }
     } on FirebaseAuthException catch (e) {
+      mensaje().info("$e");
       return false;
     }
   }
@@ -94,6 +93,20 @@ class Autentificacion with ChangeNotifier {
       final currentUser = _auth.signOut();
       // ignore: unnecessary_null_comparison
       return currentUser != null;
+    } on FirebaseAuthException catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> signInWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+      final AuthCredential credential =
+          FacebookAuthProvider.credential(result.accessToken!.token);
+      final UserCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      user = UserCredential.user;
+      return true;
     } on FirebaseAuthException catch (e) {
       return false;
     }

@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Modelo/auxProductos.dart';
+import 'package:flutter_application_1/src/Modelo/productosM.dart';
+import 'package:flutter_application_1/src/Vista/Compras/propiedadesC.dart';
 import 'package:flutter_application_1/src/Vista/menuCasa.dart';
+import 'package:provider/provider.dart';
 
+import '../../Control/Cuentas/Autentificacion.dart';
+import '../../Control/Cuentas/compras_service.dart';
 import '../menuLateral.dart';
 
-class compras extends StatelessWidget {
-  final boxBuscar = TextEditingController();
+class compras extends StatefulWidget {
+  @override
+  _comprasState createState() => _comprasState();
+}
 
+class _comprasState extends State<compras> {
+  final boxBuscar = TextEditingController();
+  List<productosM> listProductos = [];
   //Filtrar
-  List<auxProductos> listProductos = [
-    auxProductos("Apple \n Mackbook", "6.780.000",
-        "Core i5, 8GB RAM, 256 SSD Almacenamiento", "asset/portatil_1.png"),
-    auxProductos("Apple \n Mackbook Air", "14.499.900",
-        "CPU, 16GB RAM 1TB Almcenamiento ", "asset/portatil_2.png"),
-    auxProductos("Motorola \n G20", "679.900", "Camara 48MP, Bateria 5000 mAh",
-        "asset/celular_1.png"),
-    auxProductos("Samsung \n Galaxy A22", "835.900",
-        "Camara 48MP, Bateria 5000 mAh, RAM 4GB", "asset/celular_2.png"),
-    auxProductos("Reloj \n inteligente", "70.000",
-        "Resistente al agua, Conexion bluetooth", "asset/reloj_1.png"),
-    auxProductos("Samsung \n SmartWatch", "179.000",
-        "Resistente al agua, Conexion bluetooth", "asset/reloj_2.png"),
-  ];
 
   @override
   Widget build(BuildContext context) {
+    var authService = Provider.of<Autentificacion>(context);
+    String? correo = authService.user?.email;
+    _fetchListItems(correo);
     return Scaffold(
         appBar: AppBar(
             title: Text('Compras'),
@@ -32,6 +31,13 @@ class compras extends StatelessWidget {
             backgroundColor: Color(0xFF11253c)),
         drawer: MenuLateral(),
         body: new SingleChildScrollView(child: home(context)));
+  }
+
+  _fetchListItems(email) async {
+    List<productosM> lista = await CompraService().getCompraEmail(email);
+    setState(() {
+      listProductos = lista;
+    });
   }
 
   Widget home(BuildContext context) {
@@ -88,10 +94,6 @@ class compras extends StatelessWidget {
   List<Widget> generateItem(context) {
     final list = <Widget>[];
 
-    if (listProductos.length % 2 != 0) {
-      listProductos
-          .add(auxProductos("nombre", "precio", "caracteristicas", "imagen"));
-    }
     for (int i = 0; i < (listProductos.length); i++) {
       list.add(articulos(
           context,
@@ -138,15 +140,15 @@ class compras extends StatelessWidget {
                   end: Alignment(0.0, 0.9))),
           child: FlatButton(
               onPressed: () {
-                /*Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => propiedades(listProductos, index)),
-                );*/
+                      builder: (context) => propiedadesC(listProductos, index)),
+                );
               },
               child: Image(
                 fit: BoxFit.fill,
-                image: AssetImage(imagenp),
+                image: NetworkImage(imagenp),
               )),
         ),
         Container(

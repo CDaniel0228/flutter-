@@ -38,4 +38,17 @@ class ProductosService {
       return sin;
     }
   }
+
+  Future<List<productosM>> getProductoAll() async {
+    var snapshot =
+        await FirebaseFirestore.instance.collection(collection).get();
+
+    List<productosM> patients = [];
+
+    snapshot.docs.forEach((doc) {
+      patients.add(productosM.fromSnapshot(doc));
+    });
+
+    return patients;
+  }
 }

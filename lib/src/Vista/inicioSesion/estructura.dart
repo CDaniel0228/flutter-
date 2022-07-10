@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/src/Control/Coneccion/warning_widget_getx.dart';
 import 'capa1.dart';
 
 import 'capa2.dart';
@@ -32,7 +33,11 @@ class _estructuraState extends State<estructura> {
   Widget panel(BuildContext context) {
     return Container(
         child: Column(
-      children: [primeraCapa(context), lista(context)[indice]],
+      children: [
+        primeraCapa(context),
+        lista(context)[indice],
+        WarningWidgetGetX().conexion()
+      ],
     ));
   }
 

@@ -41,6 +41,7 @@ class _articulosState extends State<articulos> {
 
   Widget panel(BuildContext context) {
     return Container(
+        height: MediaQuery.of(context).size.height,
         color: Color(0xFF333742),
         child: Center(
             child: Column(
@@ -48,10 +49,10 @@ class _articulosState extends State<articulos> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             imagenProducto(context),
+            categoriaProducto(),
             nombreProducto(),
             precioProducto(),
             caracteristicasProducto(),
-            categoriaProducto(),
             botonGuardar(),
           ],
         )));
@@ -65,6 +66,31 @@ class _articulosState extends State<articulos> {
           },
           child: setImageView()),
     );
+  }
+
+  Widget categoriaProducto() {
+    var items = [" Celulares", "Televisores", "Neveras", "Accesorios"];
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      const Text('Categoria:',
+          style: TextStyle(fontSize: 22, color: Colors.white)),
+      DropdownButton(
+        value: dropdownvalue,
+        dropdownColor: Color(0xFF454d5a),
+        icon: const Icon(Icons.keyboard_arrow_down),
+        items: items.map((String items) {
+          return DropdownMenuItem(
+            value: items,
+            child: Text(items),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          setState(() {
+            dropdownvalue = newValue!;
+          });
+        },
+        style: TextStyle(color: Colors.white, fontSize: 20),
+      )
+    ]);
   }
 
   Widget nombreProducto() {
@@ -101,26 +127,6 @@ class _articulosState extends State<articulos> {
         child: TextField(
             controller: boxCategoria,
             decoration: decoracion("categoria del producto")));
-  }
-
-  Widget categoriaProducto() {
-    var items = [" Celulares", "Televisores", "Neveras", "Accesorios"];
-    return DropdownButton(
-      value: dropdownvalue,
-      icon: const Icon(Icons.keyboard_arrow_down),
-      items: items.map((String items) {
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      onChanged: (String? newValue) {
-        setState(() {
-          dropdownvalue = newValue!;
-        });
-      },
-      style: TextStyle(color: Colors.white),
-    );
   }
 
   Widget botonGuardar() {
@@ -173,7 +179,7 @@ class _articulosState extends State<articulos> {
       );
     } else {
       return const Image(
-        image: AssetImage('asset/login.png'),
+        image: AssetImage('asset/error.png'),
         height: 300,
       );
     }

@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Vista/menuCasa.dart';
 
-import '../../Modelo/auxProductos.dart';
+import '../../Control/Cuentas/producto_service.dart';
+import '../../Modelo/productosM.dart';
+import '../Propiedades/propiedades.dart';
 import '../menuLateral.dart';
 import 'categorias.dart';
 
-class SecondRoute extends StatelessWidget {
+class SecondRoute extends StatefulWidget {
+  @override
+  _SecondRouteState createState() => _SecondRouteState();
+}
+
+class _SecondRouteState extends State<SecondRoute> {
   final boxBuscar = TextEditingController();
-
+  List<productosM> listProductos = [];
   //Filtrar
-  List<auxProductos> listProductos = [
-    auxProductos("Apple \n Mackbook", "6.780.000",
-        "Core i5, 8GB RAM, 256 SSD Almacenamiento", "asset/portatil_1.png"),
-    auxProductos("Apple \n Mackbook Air", "14.499.900",
-        "CPU, 16GB RAM 1TB Almcenamiento ", "asset/portatil_2.png"),
-    auxProductos("Motorola \n G20", "679.900", "Camara 48MP, Bateria 5000 mAh",
-        "asset/celular_1.png"),
-    auxProductos("Samsung \n Galaxy A22", "835.900",
-        "Camara 48MP, Bateria 5000 mAh, RAM 4GB", "asset/celular_2.png"),
-    auxProductos("Reloj \n inteligente", "70.000",
-        "Resistente al agua, Conexion bluetooth", "asset/reloj_1.png"),
-    auxProductos("Samsung \n SmartWatch", "179.000",
-        "Resistente al agua, Conexion bluetooth", "asset/reloj_2.png"),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    _fetchListItems();
     return Scaffold(
         appBar: AppBar(
             title: Text('Catalogo'),
@@ -88,13 +81,24 @@ class SecondRoute extends StatelessWidget {
         ));
   }
 
+  _fetchListItems() async {
+    List<productosM> lista = await ProductosService().getProductoAll();
+    setState(() {
+      listProductos = lista;
+    });
+  }
+
   List<Widget> generateItem(context) {
     final list = <Widget>[];
     int count = 1;
 
     if (listProductos.length % 2 != 0) {
-      listProductos
-          .add(auxProductos("nombre", "precio", "caracteristicas", "imagen"));
+      listProductos.add(productosM(
+          "https://firebasestorage.googleapis.com/v0/b/tecnoapp-e8d99.appspot.com/o/error.jpg?alt=media&token=22312baa-bbea-496f-abbd-64b411576dca",
+          "Apple \n Mackbook",
+          "6.780.000",
+          "Core i5, 8GB RAM, 256 SSD Almacenamiento",
+          ""));
     }
     for (int i = 0; i < (listProductos.length / 2); i++) {
       list.add(articulos(
@@ -141,15 +145,15 @@ class SecondRoute extends StatelessWidget {
                   end: Alignment(0.0, 0.9))),
           child: FlatButton(
               onPressed: () {
-                /*Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => propiedades(listProductos, index)),
-                );*/
+                );
               },
               child: Image(
                 fit: BoxFit.fill,
-                image: AssetImage(imagenp),
+                image: NetworkImage(imagenp),
               )),
         ),
         Container(

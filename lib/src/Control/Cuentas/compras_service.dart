@@ -18,7 +18,8 @@ class CompraService {
   }
 
 //Buscar Compra
-  Future<List<productosM>?> getByEmail(String email) async {
+  Future<List<productosM>> getCompraEmail(String email) async {
+    List<productosM> error = [];
     try {
       var snapshot = await FirebaseFirestore.instance
           .collection(collection)
@@ -35,7 +36,7 @@ class CompraService {
       return citas;
     } catch (e) {
       print(e);
-      return null;
+      return error;
     }
   }
 }

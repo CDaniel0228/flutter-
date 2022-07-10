@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/src/Mensajes/mensaje.dart';
 
 import '../../Modelo/usuarioM.dart';
 
@@ -11,7 +12,6 @@ class ProfileService {
     if (isNullOrEmpty(email!) && isNullOrEmpty(phone!)) {
       return null;
     }
-    print('34');
     try {
       //Usuario no existe
       var snapshot;
@@ -65,12 +65,11 @@ class ProfileService {
         print("El usuario no existe");
         return null;
       }
-
       await FirebaseFirestore.instance
-          .doc(perfil.reference?.path ?? 'fallido')
+          .doc(existente.reference?.path)
           .update(perfil.toJson());
     } catch (e) {
-      print(e);
+      mensaje().info("$e");
     }
   }
 

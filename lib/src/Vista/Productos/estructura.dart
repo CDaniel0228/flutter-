@@ -30,10 +30,10 @@ class _EstructuraProductoState extends State<EstructuraProducto> {
 
   Widget panel(BuildContext context) {
     return Container(
+        height: MediaQuery.of(context).size.height,
         color: Color(0xFF333742),
         child: Center(
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [botonAgregar(), botonMostrar()],
         )));
@@ -41,16 +41,14 @@ class _EstructuraProductoState extends State<EstructuraProducto> {
 
   Widget botonAgregar() {
     return Container(
-        width: 200,
+        width: 300,
+        height: 300,
         padding: EdgeInsets.only(top: 30),
         child: RaisedButton(
           color: Color(0xFF11253c),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: const Text(
-            'Agregar un nuevo producto',
-            style: TextStyle(color: Colors.white),
-          ),
+          child: Image(image: AssetImage("asset/agregar.png")),
           onPressed: () async {
             Navigator.push(
               context,
@@ -62,16 +60,14 @@ class _EstructuraProductoState extends State<EstructuraProducto> {
 
   Widget botonMostrar() {
     return Container(
-        width: 200,
+        width: 300,
+        height: 300,
         padding: EdgeInsets.only(top: 30),
         child: RaisedButton(
           color: Color(0xFF11253c),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: const Text(
-            'Mis producto',
-            style: TextStyle(color: Colors.white),
-          ),
+          child: Image(image: AssetImage("asset/ver.png")),
           onPressed: () async {
             List<productosM> productos =
                 await ProductosService().getProducto(correo);

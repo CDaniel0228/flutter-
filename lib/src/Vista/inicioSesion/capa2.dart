@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/src/Control/Cuentas/Autentificacion.dart';
 import 'package:flutter_application_1/src/Mensajes/mensaje.dart';
 import 'package:provider/provider.dart';
+import '../../Control/Cuentas/producto_service.dart';
+import '../../Modelo/productosM.dart';
 import '../Catalogo/catalogo.dart';
 
 class capa2 {
@@ -105,7 +107,15 @@ class capa2 {
       padding: EdgeInsets.only(),
       width: 50,
       child: FlatButton(
-          onPressed: () {},
+          onPressed: () async {
+            authService = Provider.of<Autentificacion>(context, listen: false);
+            if (await authService.signInWithFacebook() == true) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SecondRoute()),
+              );
+            }
+          },
           child: Image(
             fit: BoxFit.fill,
             image: AssetImage("asset/facebook.png"),

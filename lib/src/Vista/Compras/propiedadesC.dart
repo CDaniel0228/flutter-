@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/src/Control/Cuentas/compras_service.dart';
 import 'package:flutter_application_1/src/Mensajes/mensaje.dart';
 import 'package:flutter_application_1/src/Modelo/productosM.dart';
 
-class propiedades extends StatelessWidget {
+class propiedadesC extends StatelessWidget {
   List<productosM> descriProducto;
   int index;
 
-  propiedades(this.descriProducto, this.index);
+  propiedadesC(this.descriProducto, this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -108,14 +107,11 @@ class propiedades extends StatelessWidget {
           color: Color(0xFF333742),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [agragarGusto(), agregarCompra()],
-      ),
+      child: cancelarGusto(),
     );
   }
 
-  Widget agragarGusto() {
+  Widget cancelarGusto() {
     return Padding(
         padding: EdgeInsets.only(),
         child: RaisedButton(
@@ -127,31 +123,8 @@ class propiedades extends StatelessWidget {
             color: Colors.white,
           ),
           onPressed: () async {
-            CompraService().productoAdd(productosM(
-                descriProducto.elementAt(index).imagen,
-                descriProducto.elementAt(index).nombre,
-                descriProducto.elementAt(index).precio,
-                descriProducto.elementAt(index).caracteristicas,
-                descriProducto.elementAt(index).email));
-            mensaje().info("Se agrego al carrito");
+            mensaje().info("Se cancelo el producto");
           },
-        ));
-  }
-
-  Widget agregarCompra() {
-    return Padding(
-        padding: EdgeInsets.only(),
-        child: RaisedButton(
-          color: Color(0xFF11253c),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          onPressed: () async {
-            mensaje().info("Se genero la compra");
-          },
-          child: Icon(
-            Icons.credit_score_sharp,
-            color: Colors.white,
-          ),
         ));
   }
 }
